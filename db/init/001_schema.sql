@@ -10,6 +10,24 @@ create table if not exists users (
   deleted_at timestamptz
 );
 
+-- Login identity. In production this is owned by the identity provider
+-- (Amazon Cognito) and this column is only the local mirror of its subject.
+alter table users add column if not exists email text;
+create unique index if not exists users_email_key on users(lower(email)) where email is not null;
+
+-- Server-side sessions. The cookie carries a random token; only its hash is
+-- stored, so a database dump does not hand over live sessions.
+create table if not exists user_sessions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  token_hash text not null unique,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null,
+  revoked_at timestamptz
+);
+
+create index if not exists user_sessions_user_id_idx on user_sessions(user_id);
+
 create table if not exists consent_documents (
   id uuid primary key default gen_random_uuid(),
   document_type text not null,
@@ -51,6 +69,29 @@ create table if not exists user_conditions (
 
 create index if not exists user_conditions_user_id_idx on user_conditions(user_id);
 create index if not exists user_conditions_disease_id_idx on user_conditions(disease_id);
+
+-- Daily self-report. Kept to a handful of ordinal items so it can be filled in
+-- every day; one row per user per day is what makes it a usable time series.
+-- Every scale runs 1 = 最も悪い .. 5 = 最も良い, including fatigue (5 = 疲労なし),
+-- so the columns aggregate in the same direction without per-column rules.
+create table if not exists daily_checkins (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  recorded_on date not null,
+  condition_level smallint not null,
+  fatigue_level smallint,
+  sleep_level smallint,
+  post_exertional_malaise boolean not null default false,
+  note text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id, recorded_on),
+  constraint daily_checkins_condition_range check (condition_level between 1 and 5),
+  constraint daily_checkins_fatigue_range check (fatigue_level is null or fatigue_level between 1 and 5),
+  constraint daily_checkins_sleep_range check (sleep_level is null or sleep_level between 1 and 5)
+);
+
+create index if not exists daily_checkins_user_idx on daily_checkins(user_id, recorded_on desc);
 
 create table if not exists user_demographics (
   user_id uuid primary key references users(id) on delete cascade,
@@ -103,6 +144,60 @@ create table if not exists research_identity_profiles (
   address_line2 text,
   encrypted_at timestamptz not null default now()
 );
+
+-- Date the analysis dataset is frozen. After it, a withdrawal can stop future
+-- use but cannot pull already-analysed results back out of the study.
+alter table research_studies add column if not exists data_lock_at timestamptz;
+alter table research_studies add column if not exists withdrawal_policy_note text;
+-- Shown on the study card so a participant can tell studies apart before opening one.
+alter table research_studies add column if not exists institution text;
+alter table research_studies add column if not exists target_summary text;
+
+-- What the study actually does with each item it collects. Shown to the
+-- participant verbatim, so it is data rather than hard-coded UI copy.
+create table if not exists study_data_uses (
+  id uuid primary key default gen_random_uuid(),
+  study_id uuid not null references research_studies(id) on delete cascade,
+  sort_order integer not null default 0,
+  purpose text not null,
+  detail text,
+  data_items text not null,
+  recipient text not null,
+  retention text,
+  withdrawable boolean not null default true,
+  -- Specimen stage from which this use starts. Lets the tracking timeline say
+  -- what the specimen is being used for at the point the participant is looking at.
+  applies_from text,
+  unique (study_id, purpose)
+);
+
+alter table study_data_uses add column if not exists applies_from text;
+
+create index if not exists study_data_uses_study_id_idx on study_data_uses(study_id, sort_order);
+
+-- One physical specimen per enrolment, plus its handling history. The history
+-- is what the participant sees as a tracking timeline.
+create table if not exists specimens (
+  id uuid primary key default gen_random_uuid(),
+  enrollment_id uuid not null unique references research_enrollments(id) on delete cascade,
+  specimen_code text not null unique,
+  specimen_type text not null default 'blood',
+  status text not null default 'kit_shipped',
+  analysis_scheduled_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists specimen_events (
+  id uuid primary key default gen_random_uuid(),
+  specimen_id uuid not null references specimens(id) on delete cascade,
+  status text not null,
+  occurred_at timestamptz not null default now(),
+  location text,
+  note text
+);
+
+create index if not exists specimen_events_specimen_id_idx on specimen_events(specimen_id, occurred_at);
 
 create table if not exists badges (
   id uuid primary key default gen_random_uuid(),

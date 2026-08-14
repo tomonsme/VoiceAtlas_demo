@@ -1,0 +1,86 @@
+/* 研究の一覧カードと状態バッジ */
+
+/* ---- Study list ---- */
+
+.study-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.study-card {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: inherit;
+  text-align: left;
+}
+
+.study-card:hover {
+  border-color: var(--teal);
+}
+
+.study-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.study-title {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.study-summary {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.study-meta {
+  display: grid;
+  gap: 6px 24px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  font-size: 13px;
+}
+
+.study-meta-label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.study-cta {
+  color: var(--teal);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.chip {
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.chip-on {
+  background: var(--teal);
+  color: #fff;
+}
+
+.chip-open {
+  background: var(--mint);
+  color: var(--teal);
+}
+
+.chip-quiet {
+  background: var(--bg);
+  color: var(--muted);
+}

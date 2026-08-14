@@ -1,0 +1,9 @@
+# 改行コードをリポジトリ内で統一する（Windowsからの参加を想定）
+* text=auto eol=lf
+
+# バイナリとして扱い、差分を出さない
+*.png binary
+*.pdf binary
+
+# 生成物。レビュー時に折りたたむ
+app/package-lock.json linguist-generated=true

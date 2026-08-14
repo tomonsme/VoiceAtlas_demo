@@ -58,3 +58,8 @@ Thumbs.db
 # Local tooling
 .codex/
 .agents/
+
+# Playwright / 検証用の一時ファイル
+test-results/
+playwright-report/
+*.png.tmp

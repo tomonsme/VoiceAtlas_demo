@@ -1,0 +1,139 @@
+/* サイドバーのアカウント枠、ログイン・サインアップ、同意履歴 */
+
+/* ---- Account box in the sidebar ---- */
+
+.side-account {
+  margin-top: auto;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.side-account-name {
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.side-account-email {
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.side-account .linklike {
+  margin-top: 10px;
+  color: #fff;
+}
+
+.linklike {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--teal);
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.mobile-logout {
+  margin-left: auto;
+  color: #fff;
+}
+
+/* ---- Login / sign-up ---- */
+
+.auth-switch {
+  margin-top: 18px;
+  color: var(--muted);
+}
+
+.auth-switch .linklike {
+  margin-left: 4px;
+}
+
+.mock-note {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--mint);
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.demo-accounts {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.demo-accounts ul {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-account {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  text-align: left;
+}
+
+.demo-account-name {
+  font-weight: 800;
+}
+
+.demo-account-note {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ---- Consent history ---- */
+
+.panel-actions {
+  margin-top: 16px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 22px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.data-table th {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* The home CTA now holds two buttons. */
+.home-cta {
+  flex-wrap: wrap;
+  gap: 12px;
+}

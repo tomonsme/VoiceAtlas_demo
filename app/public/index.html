@@ -4,11 +4,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>VoiceAtlas</title>
-  <link rel="stylesheet" href="/styles.css">
+  <meta name="description" content="疾患経験を持つ方のプロフィール作成と、研究参加・検体トラッキングを行うアプリです。">
+  <meta name="theme-color" content="#164E48">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <!-- iOS reads these instead of the manifest for home-screen behaviour. -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VoiceAtlas">
+  <!-- 追記順に積み上げたカスケードなので、読み込み順を変えないこと。 -->
+  <link rel="stylesheet" href="/styles/01-base.css">
+  <link rel="stylesheet" href="/styles/02-account.css">
+  <link rel="stylesheet" href="/styles/03-research.css">
+  <link rel="stylesheet" href="/styles/04-notifications.css">
+  <link rel="stylesheet" href="/styles/05-checkin.css">
+  <link rel="stylesheet" href="/styles/06-modal.css">
+  <link rel="stylesheet" href="/styles/07-page.css">
+  <link rel="stylesheet" href="/styles/08-studies.css">
 </head>
 <body>
-  <div id="app" aria-live="polite"></div>
-  <script src="/app.js"></script>
+  <div id="app"></div>
+  <script type="module" src="/js/main.js"></script>
 </body>
 </html>
 

@@ -1,0 +1,108 @@
+/* 工程詳細モーダルとその入口 */
+
+/* ---- Step detail modal ---- */
+
+.uses-entry {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.uses-entry:hover {
+  border-color: var(--teal);
+}
+
+.uses-entry-meta {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.modal {
+  width: min(680px, calc(100vw - 32px));
+  max-height: min(80vh, 760px);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.modal::backdrop {
+  background: rgba(10, 30, 28, 0.45);
+}
+
+.modal-head {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--line);
+  background: var(--teal);
+  color: #fff;
+}
+
+.modal-head h2 {
+  font-size: 19px;
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.modal-body {
+  max-height: calc(min(80vh, 760px) - 77px);
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.modal-body h3 {
+  margin: 20px 0 0;
+}
+
+.modal-step {
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.modal-step-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.modal-body .use-grid {
+  grid-template-columns: 1fr;
+}
+
+/* showModal() makes the dialog modal but leaves the page behind scrollable. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}

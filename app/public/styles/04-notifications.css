@@ -1,0 +1,105 @@
+/* マイページの通知パネル、オフライン表示、インストール導線 */
+
+/* ---- Notifications panel on マイページ ---- */
+
+.panel-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.panel-head h3 {
+  margin-bottom: 0;
+}
+
+.notice-list {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notice-list li {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+  grid-template-columns: auto 1fr;
+}
+
+.notice-list strong {
+  display: block;
+  font-size: 15px;
+}
+
+.notice-list p {
+  font-size: 13px;
+}
+
+.notice-kind {
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.kind-research {
+  background: var(--mint);
+  color: var(--teal);
+}
+
+.kind-social {
+  background: #e6f4f9;
+  color: #10556b;
+}
+
+.kind-safety {
+  background: #fff4d7;
+  color: #6f4b00;
+}
+
+/* ---- PWA: offline state and install guidance ---- */
+
+.offline-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 10px 16px;
+  background: #6f4b00;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.install-panel .panel-head {
+  margin-bottom: 8px;
+}
+
+.install-panel .panel-actions {
+  margin-top: 12px;
+}
+
+.ios-share {
+  padding: 0 4px;
+  font-weight: 900;
+}
+
+/* Keep the fixed bottom navigation clear of the iOS home indicator once the
+   app runs without browser chrome. */
+@media (display-mode: standalone) {
+  .app-shell {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-nav {
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-head {
+    padding-top: calc(10px + env(safe-area-inset-top));
+  }
+}

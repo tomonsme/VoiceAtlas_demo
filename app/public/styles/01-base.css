@@ -1,3 +1,5 @@
+/* デザイントークン、リセット、タイポグラフィ、ボタン・フォーム、アプリシェル、ナビゲーション、およびそれらのレスポンシブ調整 */
+
 :root {
   --teal: #164E48;
   --teal-2: #164E48;
@@ -10,7 +12,6 @@
   --coral: #ee7069;
   --blue: #4fb7d7;
   --gold: #d8a83d;
-  --shadow: 0 18px 42px rgba(10, 50, 44, 0.12);
 }
 
 * {
@@ -34,6 +35,13 @@ textarea {
 
 button {
   cursor: pointer;
+}
+
+/* Focus moved programmatically after a screen change: announce it, but do not
+   draw a focus ring the user did not ask for. Keyboard focus rings elsewhere
+   are left at the browser default. */
+[tabindex="-1"]:focus {
+  outline: none;
 }
 
 h1,
@@ -92,7 +100,6 @@ p {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--paper);
-  box-shadow: var(--shadow);
 }
 
 .auth-head,
@@ -114,7 +121,7 @@ p {
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fbfdfc;
+  background: var(--bg);
 }
 
 .check-row {
@@ -267,30 +274,14 @@ textarea {
   stroke-width: 2.4;
 }
 
-.reset {
-  margin-top: auto;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 8px;
-  background: transparent;
-  color: #fff;
-  font-weight: 800;
-}
-
 .mobile-head {
   display: none;
 }
 
 .main {
   min-width: 0;
-  padding: 30px;
-}
-
-.home-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 720px) minmax(280px, 420px);
-  gap: 24px;
-  align-items: start;
+  padding: 24px 28px;
+  background: var(--paper);
 }
 
 .home-primary,
@@ -299,26 +290,6 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--paper);
-  box-shadow: 0 12px 30px rgba(10, 50, 44, 0.06);
-}
-
-.brand-strip {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 28px;
-  background: var(--teal);
-}
-
-.profile-body {
-  padding: 34px;
-}
-
-.profile-head {
-  display: flex;
-  gap: 26px;
-  align-items: center;
 }
 
 .avatar {
@@ -337,42 +308,6 @@ textarea {
   fill: none;
   stroke: #fff;
   stroke-width: 5;
-}
-
-.name-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.name {
-  font-size: 30px;
-  font-weight: 900;
-}
-
-.disease {
-  margin-top: 18px;
-  font-size: 27px;
-  font-weight: 900;
-}
-
-.profile-text {
-  margin-top: 30px;
-  white-space: pre-wrap;
-  font-size: 19px;
-  font-weight: 800;
-}
-
-.home-cta {
-  display: flex;
-  justify-content: center;
-  margin-top: 54px;
-}
-
-.home-cta .primary {
-  min-width: 260px;
-  font-size: 20px;
 }
 
 .badge {
@@ -437,7 +372,6 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--paper);
-  box-shadow: var(--shadow);
 }
 
 .consent-points {
@@ -489,46 +423,6 @@ textarea {
   align-items: flex-end;
   justify-content: space-between;
   margin-bottom: 22px;
-}
-
-.future-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.search-summary {
-  margin-bottom: 16px;
-}
-
-.search-summary > div {
-  display: flex;
-  min-height: 116px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 22px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
-}
-
-.search-summary span {
-  color: var(--muted);
-  font-weight: 800;
-}
-
-.search-summary strong {
-  color: var(--teal);
-  font-size: 42px;
-  line-height: 1;
-}
-
-.future-item {
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
 }
 
 .schema-grid {
@@ -646,37 +540,9 @@ pre {
     padding: 18px;
   }
 
-  .home-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .brand-strip {
-    display: none;
-  }
-
-  .profile-body {
-    padding: 28px 22px;
-  }
-
-  .profile-head {
-    gap: 18px;
-  }
-
   .avatar {
     width: 132px;
     height: 132px;
-  }
-
-  .name {
-    font-size: 26px;
-  }
-
-  .disease {
-    font-size: 23px;
-  }
-
-  .profile-text {
-    font-size: 17px;
   }
 
   .mobile-nav {
@@ -704,10 +570,6 @@ pre {
     display: none;
   }
 
-  .future-grid {
-    grid-template-columns: 1fr;
-  }
-
   .schema-row {
     grid-template-columns: 1fr;
   }
@@ -723,7 +585,6 @@ pre {
     min-height: 100svh;
     border: 0;
     border-radius: 0;
-    box-shadow: none;
   }
 
   .auth-body {
@@ -734,10 +595,6 @@ pre {
     grid-template-columns: 1fr;
   }
 
-  .profile-head {
-    align-items: flex-start;
-  }
-
   .avatar {
     width: 112px;
     height: 112px;
@@ -746,15 +603,6 @@ pre {
   .avatar svg {
     width: 82px;
     height: 82px;
-  }
-
-  .home-cta {
-    margin-top: 36px;
-  }
-
-  .home-cta .primary {
-    width: 100%;
-    min-width: 0;
   }
 
   h1 {

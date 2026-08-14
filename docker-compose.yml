@@ -1,10 +1,11 @@
 services:
   db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-voiceatlas}
       POSTGRES_USER: ${POSTGRES_USER:-voiceatlas}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-voiceatlas_password}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
       - "127.0.0.1:${DB_PORT:-5432}:5432"
     volumes:
@@ -19,13 +20,19 @@ services:
   app:
     build:
       context: ./app
+    restart: unless-stopped
     environment:
       PORT: 3000
-      DATABASE_URL: ${DATABASE_URL:-postgresql://voiceatlas:voiceatlas_password@db:5432/voiceatlas}
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
       BASIC_AUTH_ENABLED: ${BASIC_AUTH_ENABLED:-true}
       BASIC_AUTH_USERNAME: ${BASIC_AUTH_USERNAME:?Set BASIC_AUTH_USERNAME in .env}
       BASIC_AUTH_PASSWORD: ${BASIC_AUTH_PASSWORD:?Set BASIC_AUTH_PASSWORD in .env}
       BASIC_AUTH_REALM: ${BASIC_AUTH_REALM:-VoiceAtlas Test}
+      DB_INIT_DIR: /db/init
+    volumes:
+      # Read-only so the app can re-apply the idempotent init scripts on start-up,
+      # keeping an existing volume in sync without `docker compose down -v`.
+      - ./db/init:/db/init:ro
     ports:
       - "127.0.0.1:${APP_PORT:-3000}:3000"
     depends_on:
@@ -34,6 +41,9 @@ services:
 
   cloudflared:
     image: cloudflare/cloudflared:latest
+    # Publishing to the internet is opt-in: `docker compose --profile tunnel up`.
+    # A plain `docker compose up` stays on 127.0.0.1 only.
+    profiles: ["tunnel"]
     command: tunnel --no-autoupdate --url http://app:3000
     restart: unless-stopped
     depends_on:
