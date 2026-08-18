@@ -11,13 +11,9 @@ export const diseases = [
 export const ageRanges = ["10代", "20代", "30代", "40代", "50代", "60代", "70代以上"];
 export const genders = ["女性", "男性", "ノンバイナリー", "回答しない"];
 
-// Shown on the login screen so a walkthrough can jump straight to a persona.
+// Shown on the login screen so a walkthrough can start without typing.
 export const demoAccounts = [
-  { email: "tippy@example.jp", label: "ティッピー", note: "研究参加済み・規約の再同意あり" },
-  { email: "nagi@example.jp", label: "なぎ", note: "研究参加済み" },
-  { email: "mei@example.jp", label: "めい", note: "研究同意を撤回済み" },
-  { email: "hikari@example.jp", label: "ひかり", note: "ライト登録済み" },
-  { email: "newbie@example.jp", label: "newbie", note: "サインアップのみ・未登録" }
+  { email: "tippy@example.jp", label: "ティッピー", note: "研究参加済み・記録あり" }
 ];
 
 /* Every scale runs 1 = 最も悪い .. 5 = 最も良い so the three items aggregate in

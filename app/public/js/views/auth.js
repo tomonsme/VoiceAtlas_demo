@@ -4,6 +4,9 @@ import { logo, errorBox, sessionFooter } from "./shell.js";
 
 export function renderAuth() {
   const isSignup = state.authMode === "signup";
+  // ログインは初期値で埋めておき、デモは開いてボタンを押すだけで始められるようにする。
+  // アカウント作成では埋めない（既存アドレスが入っていると必ず失敗するため）。
+  const prefill = isSignup ? "" : demoAccounts[0]?.email || "";
   const accountList = demoAccounts
     .map(
       (account) => `<li>
@@ -29,7 +32,8 @@ export function renderAuth() {
         <form id="authForm" class="form-grid">
           <div class="field full">
             <label for="authEmail">メールアドレス</label>
-            <input id="authEmail" name="email" type="email" required autocomplete="email" placeholder="例：tippy@example.jp">
+            <input id="authEmail" name="email" type="email" required autocomplete="email"
+                   value="${escapeHtml(prefill)}" placeholder="例：tippy@example.jp">
           </div>
           <div class="field full">
             <label for="authPassword">パスワード</label>
@@ -44,8 +48,12 @@ export function renderAuth() {
           ${isSignup ? "すでにアカウントをお持ちの場合は" : "アカウントをお持ちでない場合は"}
           <button class="linklike" data-auth-mode="${isSignup ? "login" : "signup"}">${isSignup ? "ログイン" : "アカウント作成"}</button>
         </p>
-        <p class="mock-note">モック環境のため、パスワードは検証されません。本番では Amazon Cognito が認証を担います。</p>
-        ${isSignup ? "" : `<div class="demo-accounts"><h3>デモ用アカウント</h3><ul>${accountList}</ul></div>`}
+        ${
+          // 候補が1件のときは入力済みの値をなぞるだけなので出さない
+          isSignup || demoAccounts.length < 2
+            ? ""
+            : `<div class="demo-accounts"><h3>デモ用アカウント</h3><ul>${accountList}</ul></div>`
+        }
       </div>
     </section>
   </div>`;
