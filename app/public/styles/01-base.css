@@ -619,3 +619,99 @@ pre {
     border-radius: 0;
   }
 }
+
+/* ---- 言語切替 ----
+ * サイドバー、モバイルヘッダ、認証画面のヘッダはいずれもティール地なので、
+ * 白抜きのセグメント1種類で足りる。 */
+
+.side-foot {
+  display: grid;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.lang-switch {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lang-option {
+  flex: 1;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.lang-option.on {
+  background: #fff;
+  color: var(--teal);
+}
+
+.lang-switch.is-compact .lang-option {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.auth-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mobile-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .auth-head {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  /* ヘッダにロゴ・言語・ログアウトが並ぶので、ロゴを詰めて1行に収める。 */
+  .mobile-head .brand-logo {
+    width: 122px;
+  }
+
+  .mobile-head-actions {
+    gap: 8px;
+  }
+
+  .mobile-head .mobile-logout {
+    white-space: nowrap;
+  }
+
+  .lang-switch.is-compact .lang-option {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  /* 320px 級ではロゴと操作が1行に収まらないので、折り返しを許す。 */
+  .mobile-head {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 12px 14px;
+  }
+
+  .mobile-head .brand-logo {
+    width: 108px;
+  }
+}

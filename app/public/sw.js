@@ -16,7 +16,7 @@
  * prototype under active development never serves a stale build.
  */
 
-const CACHE = "voiceatlas-shell-v1";
+const CACHE = "voiceatlas-shell-v2";
 
 const SHELL = [
   "/",
@@ -30,6 +30,8 @@ const SHELL = [
   "/styles/08-studies.css",
   "/js/main.js",
   "/js/state.js",
+  "/js/i18n.js",
+  "/js/labels.js",
   "/js/util.js",
   "/js/api.js",
   "/js/mock-api.js",
@@ -45,6 +47,7 @@ const SHELL = [
   "/js/views/account.js",
   "/js/views/research.js",
   "/manifest.webmanifest",
+  "/manifest.en.webmanifest",
   "/assets/logo.png",
   "/icons/icon-192.png",
   "/icons/icon-512.png",

@@ -1,6 +1,7 @@
 import { state, installPrompt } from "../state.js";
 import { escapeHtml } from "../util.js";
 import { isStandalone, isIosDevice } from "../pwa.js";
+import { t, pick, getLang, languages } from "../i18n.js";
 
 export function logo() {
   return `<div class="brand"><img class="brand-logo" src="/assets/logo.png" alt="VoiceAtlas"></div>`;
@@ -27,7 +28,7 @@ export function navItem(id, label, iconName) {
 export function verifiedBadge() {
   return `<span class="badge">
     <svg viewBox="0 0 24 24"><path d="M12 2 15 8l6 .9-4.5 4.4 1 6.2L12 16.6 6.5 19.5l1-6.2L3 8.9 9 8z"/></svg>
-    研究認証
+    ${escapeHtml(t("research.badge"))}
   </span>`;
 }
 
@@ -38,7 +39,7 @@ export function errorBox() {
 export function offlineBanner() {
   if (!state.offline) return "";
   return `<div class="offline-bar" role="status">
-    オフラインです。表示中の内容は最新でない場合があります。
+    ${escapeHtml(t("offline.banner"))}
   </div>`;
 }
 
@@ -46,18 +47,18 @@ export function installPanel() {
   if (state.installDismissed || isStandalone()) return "";
 
   const body = installPrompt
-    ? `<p class="muted">ホーム画面に追加すると、ブラウザのバーがない画面で使えます。</p>
-       <div class="panel-actions"><button class="secondary" data-install-app>アプリとしてインストール</button></div>`
+    ? `<p class="muted">${escapeHtml(t("install.lead"))}</p>
+       <div class="panel-actions"><button class="secondary" data-install-app>${escapeHtml(t("install.action"))}</button></div>`
     : isIosDevice()
-      ? `<p class="muted">画面下部の共有ボタン <span class="ios-share" aria-hidden="true">⬆︎</span> から「ホーム画面に追加」を選ぶと、アプリとして使えます。</p>`
+      ? `<p class="muted">${escapeHtml(t("install.ios"))}</p>`
       : "";
 
   if (!body) return "";
 
   return `<section class="card install-panel">
     <div class="panel-head">
-      <h3>アプリとして使う</h3>
-      <button class="linklike" data-dismiss-install>閉じる</button>
+      <h3>${escapeHtml(t("install.title"))}</h3>
+      <button class="linklike" data-dismiss-install>${escapeHtml(t("common.close"))}</button>
     </div>
     ${body}
   </section>`;
@@ -68,18 +69,31 @@ export function installPanel() {
 export function sessionFooter() {
   if (!state.profile) return "";
   return `<p class="auth-switch">
-    ${escapeHtml(state.profile.email)} でログイン中
-    <button class="linklike" data-logout>ログアウト</button>
+    ${escapeHtml(t("auth.signedInAs", { email: state.profile.email }))}
+    <button class="linklike" data-logout>${escapeHtml(t("nav.logout"))}</button>
   </p>`;
+}
+
+/* 言語切替。ログイン前でも押せるように、シェルと認証画面の両方に置く。 */
+export function languageSwitch(modifier = "") {
+  const current = getLang();
+  const options = languages
+    .map(
+      (lang) => `<button class="lang-option${lang.code === current ? " on" : ""}"
+        data-lang="${lang.code}" lang="${lang.code}"
+        aria-pressed="${lang.code === current}">${escapeHtml(lang.label)}</button>`
+    )
+    .join("");
+  return `<div class="lang-switch ${modifier}" role="group" aria-label="${escapeHtml(t("common.language"))}">${options}</div>`;
 }
 
 export function accountBox() {
   const profile = state.profile;
   if (!profile) return "";
   return `<div class="side-account">
-    <div class="side-account-name">${escapeHtml(profile.nickname)}</div>
+    <div class="side-account-name">${escapeHtml(pick(profile.nickname))}</div>
     <div class="side-account-email">${escapeHtml(profile.email)}</div>
-    <button class="linklike" data-logout>ログアウト</button>
+    <button class="linklike" data-logout>${escapeHtml(t("nav.logout"))}</button>
   </div>`;
 }
 
@@ -88,22 +102,25 @@ export function frame(content) {
     <aside class="sidebar">
       ${logo()}
       <nav class="side-nav">
-        ${navItem("today", "本日の記録", "note")}
-        ${navItem("search", "検索", "search")}
-        ${navItem("research", "研究", "dna")}
-        ${navItem("community", "交流", "chat")}
-        ${navItem("mypage", "マイページ", "user")}
+        ${navItem("today", t("nav.today"), "note")}
+        ${navItem("search", t("nav.search"), "search")}
+        ${navItem("research", t("nav.research"), "dna")}
+        ${navItem("community", t("nav.community"), "chat")}
+        ${navItem("mypage", t("nav.mypage"), "user")}
       </nav>
-      ${accountBox()}
+      <div class="side-foot">
+        ${accountBox()}
+        ${languageSwitch()}
+      </div>
     </aside>
-    <div class="mobile-head">${logo()}${state.profile ? `<button class="linklike mobile-logout" data-logout>ログアウト</button>` : ""}</div>
+    <div class="mobile-head">${logo()}<div class="mobile-head-actions">${languageSwitch("is-compact")}${state.profile ? `<button class="linklike mobile-logout" data-logout>${escapeHtml(t("nav.logout"))}</button>` : ""}</div></div>
     <main class="main">${content}</main>
     <nav class="mobile-nav">
-      ${navItem("today", "本日の記録", "note")}
-      ${navItem("search", "検索", "search")}
-      ${navItem("research", "研究", "dna")}
-      ${navItem("community", "交流", "chat")}
-      ${navItem("mypage", "マイページ", "user")}
+      ${navItem("today", t("nav.today"), "note")}
+      ${navItem("search", t("nav.search"), "search")}
+      ${navItem("research", t("nav.research"), "dna")}
+      ${navItem("community", t("nav.community"), "chat")}
+      ${navItem("mypage", t("nav.mypage"), "user")}
     </nav>
   </div>`;
 }

@@ -240,23 +240,6 @@ function nextStatus(current) {
   return i < 0 || i >= specimenSteps.length - 1 ? null : specimenSteps[i + 1].status;
 }
 
-function buildInsight({ recordedDays, average, previousAverage, deviation, pemDays, windowDays }) {
-  if (recordedDays < 5) return [`記録が${recordedDays}日ぶんしかないため、傾向はまだ判断できません。`];
-  const out = [];
-  const delta = previousAverage === null ? null : Number((average - previousAverage).toFixed(1));
-  if (delta === null) out.push(`この${windowDays}日の体調は平均${average}でした。比較できる前の期間がまだありません。`);
-  else if (Math.abs(delta) < 0.2) out.push(`この${windowDays}日の体調は、前の${windowDays}日と大きく変わっていません。`);
-  else if (delta > 0) out.push(`この${windowDays}日の体調は、前の${windowDays}日より平均${Math.abs(delta)}ぶん良い状態でした。`);
-  else out.push(`この${windowDays}日の体調は、前の${windowDays}日より平均${Math.abs(delta)}ぶん低い状態でした。`);
-  if (deviation !== null) {
-    if (deviation < 0.6) out.push("日ごとの差は小さく、落ち着いています。");
-    else if (deviation < 1.1) out.push("日によって多少の波があります。");
-    else out.push("日によって差が大きい状態です。");
-  }
-  if (pemDays > 0) out.push(`動いた後の悪化は${pemDays}日ありました。`);
-  return out;
-}
-
 const round2 = (n) => (n === null || Number.isNaN(n) ? null : Number(n.toFixed(2)));
 
 function checkinBoard(windowDays) {
@@ -306,7 +289,6 @@ function checkinBoard(windowDays) {
     today: todayEntry.conditionLevel === null ? null : todayEntry,
     days,
     summary,
-    insight: buildInsight({ ...summary, windowDays }),
     // 記録している人が自分ひとりなので、平均は伏せられる側の分岐になる
     cohort: { disease: store.profile.disease, contributors: 1, minContributors: 5, average: null }
   };

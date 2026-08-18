@@ -1,3 +1,6 @@
+import { t } from "./i18n.js";
+
+// 疾患・年代・性別は「保存される正準値」。表示だけ optLabel() で訳す。
 export const diseases = [
   "筋痛性脳脊髄炎",
   "Long COVID",
@@ -12,39 +15,53 @@ export const ageRanges = ["10代", "20代", "30代", "40代", "50代", "60代", 
 export const genders = ["女性", "男性", "ノンバイナリー", "回答しない"];
 
 // Shown on the login screen so a walkthrough can start without typing.
+// ラベルは表示時に t() を通す（辞書キーを持つ）。
 export const demoAccounts = [
-  { email: "tippy@example.jp", label: "ティッピー", note: "研究参加済み・記録あり" }
+  { email: "tippy@example.jp", labelKey: "auth.demoName", noteKey: "auth.demoNote" }
 ];
 
-/* Every scale runs 1 = 最も悪い .. 5 = 最も良い so the three items aggregate in
- * the same direction. Fatigue is worded accordingly (5 = 疲労がない). */
-export const levelLabels = {
-  condition: ["", "とても悪い", "悪い", "ふつう", "良い", "とても良い"],
-  fatigue: ["", "とても強い", "強い", "ふつう", "弱い", "ない"],
-  sleep: ["", "とても悪い", "悪い", "ふつう", "良い", "とても良い"]
+/* Every scale runs 1 = worst .. 5 = best so the three items aggregate in the
+ * same direction. Labels live in the dictionary as level.<scale>.<n>. */
+export const levelScales = ["condition", "fatigue", "sleep"];
+
+export function levelLabel(scale, level) {
+  return level ? t(`level.${scale}.${level}`) : "";
+}
+
+const consentLabelKeys = {
+  terms: "consents.terms",
+  privacy: "consents.privacy",
+  research_participation: "consents.research"
 };
 
-export const consentLabels = {
-  terms: "利用規約・プライバシーポリシー",
-  privacy: "プライバシーポリシー",
-  research_participation: "研究参加同意"
+export function consentLabel(documentType) {
+  const key = consentLabelKeys[documentType];
+  return key ? t(key) : documentType;
+}
+
+const errorKeys = {
+  server_error: "error.server",
+  invalid_json: "error.invalidJson",
+  payload_too_large: "error.payloadTooLarge",
+  terms_required: "error.termsRequired",
+  research_consent_required: "error.researchConsentRequired",
+  profile_not_found: "error.profileNotFound",
+  not_authenticated: "error.notAuthenticated",
+  invalid_email: "error.invalidEmail",
+  email_taken: "error.emailTaken",
+  login_failed: "error.loginFailed",
+  enrollment_not_found: "error.enrollmentNotFound",
+  specimen_not_found: "error.specimenNotFound",
+  specimen_final_stage: "error.specimenFinalStage",
+  request_error: "error.requestError",
+  invalid_level: "error.invalidLevel",
+  study_not_available: "error.studyNotAvailable"
 };
 
-export const errorMessages = {
-  server_error: "サーバーエラーが発生しました。時間をおいて再度お試しください。",
-  invalid_json: "送信内容の形式が正しくありません。",
-  payload_too_large: "送信内容が大きすぎます。",
-  terms_required: "利用規約への同意が必要です。",
-  research_consent_required: "研究参加への同意が必要です。",
-  profile_not_found: "プロフィールが見つかりませんでした。",
-  not_authenticated: "ログインが必要です。",
-  invalid_email: "メールアドレスの形式が正しくありません。",
-  email_taken: "このメールアドレスは既に登録されています。",
-  login_failed: "アカウントが見つかりません。メールアドレスを確認してください。",
-  enrollment_not_found: "研究参加の登録が見つかりませんでした。",
-  specimen_not_found: "検体の登録が見つかりませんでした。",
-  specimen_final_stage: "検体はすでに最終工程です。"
-};
+export function errorMessage(code) {
+  const key = errorKeys[code];
+  return key ? t(key) : "";
+}
 
 /* Screen <-> URL map. `deepLink` marks the screens that are safe to open
  * directly; the rest exist only so the back gesture works inside a flow. */

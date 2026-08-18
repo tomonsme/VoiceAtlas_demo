@@ -1,4 +1,5 @@
-import { errorMessages } from "./state.js";
+import { errorMessage } from "./state.js";
+import { t } from "./i18n.js";
 import { mockApi } from "./mock-api.js";
 
 /* バックエンドの有無を最初の1回で見分ける。
@@ -23,7 +24,7 @@ export async function api(path, options = {}) {
   } catch (_error) {
     // A failed fetch is a lost connection, not a rejected request: the caller
     // must be able to tell those apart before deciding what to show.
-    const offline = new Error("通信できません。接続を確認してください。");
+    const offline = new Error(t("error.offline"));
     offline.offline = true;
     throw offline;
   }
@@ -42,7 +43,7 @@ export async function api(path, options = {}) {
 
   backend = "real";
   if (!response.ok) {
-    throw new Error(errorMessages[data.error] || data.message || data.error || "通信に失敗しました。");
+    throw new Error(errorMessage(data.error) || data.message || data.error || t("error.network"));
   }
   return data;
 }
@@ -51,6 +52,6 @@ function callMock(path, options) {
   try {
     return Promise.resolve(mockApi(path, options));
   } catch (error) {
-    return Promise.reject(new Error(errorMessages[error.code] || error.message || "エラーが発生しました。"));
+    return Promise.reject(new Error(errorMessage(error.code) || error.message || t("error.network")));
   }
 }

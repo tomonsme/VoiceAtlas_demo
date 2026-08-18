@@ -61,12 +61,14 @@ export function buildCheckinHistory() {
 export const profile = {
   id: "demo-user-tippy",
   email: "tippy@example.jp",
-  nickname: "ティッピー",
+  nickname: { ja: "ティッピー", en: "Tippy" },
   ageRange: "40代",
   gender: "男性",
   disease: "筋痛性脳脊髄炎",
-  conditionStatusText:
-    "3年前、コロナワクチン接種後に強い倦怠感から日常生活が困難になりました。筋痛性脳脊髄炎と診断されるまで2年かかり、現在も症状は改善しません。",
+  conditionStatusText: {
+    ja: "3年前、コロナワクチン接種後に強い倦怠感から日常生活が困難になりました。筋痛性脳脊髄炎と診断されるまで2年かかり、現在も症状は改善しません。",
+    en: "Three years ago, severe fatigue after a COVID vaccination made daily life difficult. It took two years to be diagnosed with ME/CFS, and the symptoms have not improved."
+  },
   registered: true,
   termsAccepted: true,
   researchVerified: true,
@@ -74,8 +76,11 @@ export const profile = {
   badges: [
     {
       code: "research_verified",
-      label: "研究認証",
-      description: "研究参加同意と本人情報登録が完了したユーザーに表示するバッジ。",
+      label: { ja: "研究認証", en: "Research verified" },
+      description: {
+        ja: "研究参加同意と本人情報登録が完了したユーザーに表示するバッジ。",
+        en: "Shown once study consent and identity registration are complete."
+      },
       granted_at: daysAgo(149).toISOString()
     }
   ]
@@ -107,29 +112,47 @@ export const consents = [
 
 const commonUses = [
   {
-    purpose: "研究目的での解析",
-    detail: "研究計画に記載された解析にのみ使用します。",
-    dataItems: "血液検体、症状・治療の記録、年代・性別",
-    recipient: "研究代表機関",
-    retention: "研究終了後5年",
+    purpose: { ja: "研究目的での解析", en: "Analysis for the study" },
+    detail: {
+      ja: "研究計画に記載された解析にのみ使用します。",
+      en: "Used only for the analyses set out in the study protocol."
+    },
+    dataItems: {
+      ja: "血液検体、症状・治療の記録、年代・性別",
+      en: "Blood sample, symptom and treatment records, age range and gender"
+    },
+    recipient: { ja: "研究代表機関", en: "The lead research institution" },
+    retention: { ja: "研究終了後5年", en: "5 years after the study ends" },
     withdrawable: true,
     appliesFrom: "analyzing"
   },
   {
-    purpose: "検体・結果の送付",
-    detail: "採取キットの発送と、希望者への結果返却に使います。解析には使用しません。",
-    dataItems: "氏名、住所",
-    recipient: "VoiceAtlas運営（発送業務のみ）",
-    retention: "送付完了後1年",
+    purpose: { ja: "検体・結果の送付", en: "Sending the kit and results" },
+    detail: {
+      ja: "採取キットの発送と、希望者への結果返却に使います。解析には使用しません。",
+      en: "Used to post the collection kit and, if you ask for them, to return your results. Never used for analysis."
+    },
+    dataItems: { ja: "氏名、住所", en: "Name and address" },
+    recipient: {
+      ja: "VoiceAtlas運営（発送業務のみ）",
+      en: "The VoiceAtlas team (postage only)"
+    },
+    retention: { ja: "送付完了後1年", en: "1 year after delivery" },
     withdrawable: true,
     appliesFrom: "kit_shipped"
   },
   {
-    purpose: "研究成果の公表",
-    detail: "論文・学会発表に使用します。個人が特定できない統計処理後の形のみを扱います。",
-    dataItems: "統計処理後のデータ（個人を特定できない形）",
-    recipient: "学術論文、学会発表",
-    retention: "公表後は削除できません",
+    purpose: { ja: "研究成果の公表", en: "Publishing the findings" },
+    detail: {
+      ja: "論文・学会発表に使用します。個人が特定できない統計処理後の形のみを扱います。",
+      en: "Used in papers and conference talks, only in aggregated form that cannot identify you."
+    },
+    dataItems: {
+      ja: "統計処理後のデータ（個人を特定できない形）",
+      en: "Aggregated data that cannot identify an individual"
+    },
+    recipient: { ja: "学術論文、学会発表", en: "Academic papers and conference presentations" },
+    retention: { ja: "公表後は削除できません", en: "Cannot be removed once published" },
     withdrawable: false,
     appliesFrom: "data_registered"
   }
@@ -138,29 +161,55 @@ const commonUses = [
 export const studies = [
   {
     id: "study-initial",
-    title: "VoiceAtlas 初期研究",
-    summary:
-      "疾患経験者のプロフィール、状態、研究参加意思を安全に扱うための初期研究。血液検体と日々の記録から、症状の重さに関わる要因を調べます。",
-    institution: "国内の大学医学部（研究代表機関）",
-    targetSummary: "筋痛性脳脊髄炎、Long COVID、線維筋痛症",
+    title: { ja: "VoiceAtlas 初期研究", en: "VoiceAtlas founding study" },
+    summary: {
+      ja: "疾患経験者のプロフィール、状態、研究参加意思を安全に扱うための初期研究。血液検体と日々の記録から、症状の重さに関わる要因を調べます。",
+      en: "The first VoiceAtlas study: handling profiles, health status and consent to take part safely. It looks at what drives symptom severity, using a blood sample and your daily records."
+    },
+    institution: {
+      ja: "国内の大学医学部（研究代表機関）",
+      en: "A university medical school in Japan (lead institution)"
+    },
+    targetSummary: {
+      ja: "筋痛性脳脊髄炎、Long COVID、線維筋痛症",
+      en: "ME/CFS, Long COVID and fibromyalgia"
+    },
     status: "active",
-    statusLabel: "実施中",
+    statusLabel: { ja: "実施中", en: "In progress" },
     dataUses: [
       {
-        purpose: "疾患メカニズムの解明",
-        detail: "発症の仕組みや、症状の重さに関わる要因を調べます。",
-        dataItems: "血液検体（DNA・血漿）、症状・治療の記録、年代・性別",
-        recipient: "研究代表機関（国内の大学医学部）",
-        retention: "研究終了後5年",
+        purpose: { ja: "疾患メカニズムの解明", en: "Understanding the mechanism" },
+        detail: {
+          ja: "発症の仕組みや、症状の重さに関わる要因を調べます。",
+          en: "Looking at how the condition begins and what makes symptoms more severe."
+        },
+        dataItems: {
+          ja: "血液検体（DNA・血漿）、症状・治療の記録、年代・性別",
+          en: "Blood sample (DNA and plasma), symptom and treatment records, age range and gender"
+        },
+        recipient: {
+          ja: "研究代表機関（国内の大学医学部）",
+          en: "The lead institution (a university medical school in Japan)"
+        },
+        retention: { ja: "研究終了後5年", en: "5 years after the study ends" },
         withdrawable: true,
         appliesFrom: "analyzing"
       },
       {
-        purpose: "診断マーカーの探索",
-        detail: "血液中の指標から、診断や重症度の判定に使える指標を探します。",
-        dataItems: "血液検体（血漿）、症状の経過記録",
-        recipient: "研究代表機関および共同研究機関（国内）",
-        retention: "研究終了後5年",
+        purpose: { ja: "診断マーカーの探索", en: "Looking for diagnostic markers" },
+        detail: {
+          ja: "血液中の指標から、診断や重症度の判定に使える指標を探します。",
+          en: "Searching blood measurements for markers that could support diagnosis or grade severity."
+        },
+        dataItems: {
+          ja: "血液検体（血漿）、症状の経過記録",
+          en: "Blood sample (plasma) and your symptom history"
+        },
+        recipient: {
+          ja: "研究代表機関および共同研究機関（国内）",
+          en: "The lead institution and its partner institutions in Japan"
+        },
+        retention: { ja: "研究終了後5年", en: "5 years after the study ends" },
         withdrawable: true,
         appliesFrom: "analyzing"
       },
@@ -170,38 +219,59 @@ export const studies = [
   },
   {
     id: "study-mecfs",
-    title: "筋痛性脳脊髄炎の重症度指標に関する研究",
-    summary: "日々の体調記録と血液検体から、重症度を判定できる指標を探します。通院の負担を減らすことを目指しています。",
-    institution: "国内の大学病院 神経内科",
-    targetSummary: "筋痛性脳脊髄炎と診断されている方",
+    title: {
+      ja: "筋痛性脳脊髄炎の重症度指標に関する研究",
+      en: "Severity markers in ME/CFS"
+    },
+    summary: {
+      ja: "日々の体調記録と血液検体から、重症度を判定できる指標を探します。通院の負担を減らすことを目指しています。",
+      en: "Searching daily records and a blood sample for a way to grade severity, so fewer hospital visits are needed."
+    },
+    institution: { ja: "国内の大学病院 神経内科", en: "Neurology, a university hospital in Japan" },
+    targetSummary: {
+      ja: "筋痛性脳脊髄炎と診断されている方",
+      en: "People with a diagnosis of ME/CFS"
+    },
     status: "recruiting",
-    statusLabel: "募集中",
+    statusLabel: { ja: "募集中", en: "Recruiting" },
     dataUses: commonUses
   },
   {
     id: "study-longcovid",
-    title: "Long COVIDの回復経過に関する長期観察",
-    summary: "感染後の症状がどのように変化するかを2年間かけて観察します。検体の提供は年1回です。",
-    institution: "国内の研究機関",
-    targetSummary: "Long COVIDの症状が3か月以上続いている方",
+    title: {
+      ja: "Long COVIDの回復経過に関する長期観察",
+      en: "Long-term follow-up of recovery in Long COVID"
+    },
+    summary: {
+      ja: "感染後の症状がどのように変化するかを2年間かけて観察します。検体の提供は年1回です。",
+      en: "Following how symptoms change after infection over two years. One sample per year."
+    },
+    institution: { ja: "国内の研究機関", en: "A research institute in Japan" },
+    targetSummary: {
+      ja: "Long COVIDの症状が3か月以上続いている方",
+      en: "People with Long COVID symptoms lasting 3 months or more"
+    },
     status: "recruiting",
-    statusLabel: "募集中",
+    statusLabel: { ja: "募集中", en: "Recruiting" },
     dataUses: commonUses
   },
   {
     id: "study-sleep",
-    title: "慢性疲労と睡眠の関連調査",
-    summary: "睡眠の質と日中の疲労感の関連を調べた調査です。募集は終了しました。",
-    institution: "国内の大学 睡眠医科学講座",
-    targetSummary: "慢性的な疲労のある方",
+    title: { ja: "慢性疲労と睡眠の関連調査", en: "Sleep and chronic fatigue" },
+    summary: {
+      ja: "睡眠の質と日中の疲労感の関連を調べた調査です。募集は終了しました。",
+      en: "A survey of how sleep quality relates to daytime fatigue. Recruitment has closed."
+    },
+    institution: { ja: "国内の大学 睡眠医科学講座", en: "Sleep medicine, a university in Japan" },
+    targetSummary: { ja: "慢性的な疲労のある方", en: "People living with chronic fatigue" },
     status: "closed",
-    statusLabel: "終了",
+    statusLabel: { ja: "終了", en: "Closed" },
     dataUses: commonUses
   }
 ];
 
-export const withdrawalPolicyNote =
-  "解析が始まる前に撤回した場合は、検体を破棄し、提供いただいた情報をすべて削除します。解析が始まった後は、検体の破棄と以後の利用停止はできますが、既に解析を終えたデータの削除はできない場合があります。データ固定日を過ぎると、統計処理に含まれたデータは取り出せません。";
+// 文言そのものは辞書（phase.policyNote）にある。ここは「注記がある」ことだけを示す。
+export const withdrawalPolicyNote = true;
 
 /** 初期研究への参加。検体は解析・データベース登録まで終わっている状態。 */
 export function initialEnrolment() {

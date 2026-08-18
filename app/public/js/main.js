@@ -1,12 +1,12 @@
 import {
   state,
-  levelLabels,
   installDismissKey,
   installPrompt,
   setInstallPrompt,
   setSuppressHistory
 } from "./state.js";
 import { escapeHtml, formatDate } from "./util.js";
+import { t, getLang, setLang, applyDocumentLanguage } from "./i18n.js";
 import { api } from "./api.js";
 import { setRenderer } from "./render-bus.js";
 import { applyProfile, resetSessionState } from "./session.js";
@@ -57,8 +57,8 @@ function screenHtml() {
   if (state.screen === "main") {
     if (state.active === "today") return renderToday();
     if (state.active === "mypage") return renderMyPage();
-    if (state.active === "search") return renderFuture("ユーザー検索", "search");
-    if (state.active === "community") return renderFuture("交流コミュニティ", "community");
+    if (state.active === "search") return renderFuture(t("search.title"), "search");
+    if (state.active === "community") return renderFuture(t("community.title"), "community");
     if (state.active === "research") return renderResearchList();
   }
   return renderLoading();
@@ -91,13 +91,13 @@ function bindChartReadout() {
   const describe = (day) => {
     if (!day) return "";
     const date = new Date(`${day.date}T00:00:00`);
-    const head = `${date.getMonth() + 1}月${date.getDate()}日`;
-    if (day.conditionLevel === null) return `${head} ・ 未記録`;
-    const parts = [`体調 ${levelLabels.condition[day.conditionLevel]}`];
-    if (day.fatigueLevel) parts.push(`疲労感 ${levelLabels.fatigue[day.fatigueLevel]}`);
-    if (day.sleepLevel) parts.push(`睡眠 ${levelLabels.sleep[day.sleepLevel]}`);
-    if (day.pem) parts.push("労作後の悪化あり");
-    return `${head} ・ ${parts.join(" ・ ")}`;
+    const head = `${date.getMonth() + 1}/${date.getDate()}`;
+    if (day.conditionLevel === null) return `${head}${t("common.dotSeparator")}${t("trend.unrecorded")}`;
+    const parts = [`${t("today.conditionShort")} ${t(`level.condition.${day.conditionLevel}`)}`];
+    if (day.fatigueLevel) parts.push(`${t("today.fatigueShort")} ${t(`level.fatigue.${day.fatigueLevel}`)}`);
+    if (day.sleepLevel) parts.push(`${t("today.sleepShort")} ${t(`level.sleep.${day.sleepLevel}`)}`);
+    if (day.pem) parts.push(t("today.pemShort"));
+    return `${head}${t("common.dotSeparator")}${parts.join(t("common.dotSeparator"))}`;
   };
 
   const days = state.checkins.days;
@@ -185,7 +185,7 @@ function bind() {
       event.preventDefault();
       const form = new FormData(checkinForm);
       if (!form.get("conditionLevel")) {
-        state.error = "体調を選んでください。";
+        state.error = t("error.conditionRequired");
         render();
         return;
       }
@@ -260,6 +260,17 @@ function bind() {
   });
 
   bindChartReadout();
+
+  document.querySelectorAll("[data-lang]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const next = button.dataset.lang;
+      if (next === getLang()) return;
+      setLang(next);
+      // 保存済みのエラー文は前の言語のままなので捨てる。
+      state.error = "";
+      render();
+    });
+  });
 
   document.querySelectorAll("[data-dismiss-install]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -477,7 +488,7 @@ function bind() {
     const updateStudyNext = () => {
       studyNext.disabled = !state.consentPdfOpened || !studyChecks.every((item) => item.checked);
       if (pdfStatus) {
-        pdfStatus.textContent = state.consentPdfOpened ? "確認済み" : "未確認";
+        pdfStatus.textContent = state.consentPdfOpened ? t("consentFlow.checked") : t("consentFlow.unchecked");
         pdfStatus.classList.toggle("done", state.consentPdfOpened);
       }
     };
@@ -532,7 +543,7 @@ function bind() {
 
   document.querySelectorAll("[data-withdraw-research]").forEach((button) => {
     button.addEventListener("click", async () => {
-      if (!window.confirm("研究参加の同意を撤回しますか？\n検体は破棄され、以後の利用を停止します。")) return;
+      if (!window.confirm(t("withdraw.confirm"))) return;
       try {
         const data = await api("/api/research/withdraw", {
           method: "POST",
@@ -572,5 +583,6 @@ async function boot() {
 }
 
 setRenderer(render);
+applyDocumentLanguage();
 initPwa();
 boot();
