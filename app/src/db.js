@@ -7,7 +7,14 @@ if (!process.env.DATABASE_URL && !process.env.POSTGRES_PASSWORD) {
   throw new Error("DATABASE_URL or POSTGRES_PASSWORD must be set");
 }
 
+// Neon や Render などのホスト型 Postgres は SSL 必須。ローカルの docker compose
+// では不要なので、接続先に応じて切り替える。
+const sslRequired =
+  process.env.DATABASE_SSL === "true" ||
+  /[?&]sslmode=require/.test(process.env.DATABASE_URL || "");
+
 const poolOptions = {
+  ...(sslRequired ? { ssl: { rejectUnauthorized: true } } : {}),
   max: Number(process.env.PG_POOL_MAX || 10),
   connectionTimeoutMillis: Number(process.env.PG_CONNECTION_TIMEOUT_MS || 5000),
   idleTimeoutMillis: Number(process.env.PG_IDLE_TIMEOUT_MS || 30000),

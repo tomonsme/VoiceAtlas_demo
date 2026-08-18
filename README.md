@@ -88,6 +88,9 @@ Cache Storageは端末のディスクに残り、ログアウトしても消え�
 ```
 .
 ├── docker-compose.yml      db / app / cloudflared（トンネルはプロファイル指定時のみ）
+├── netlify.toml            Netlify の配信設定（静的配信と /api/* の振り分け）
+├── netlify/functions/      Netlify Functions の入口。app/src の Express を動かす
+├── package.json            Netlify Functions 用の依存（コンテナ版は app/package.json）
 ├── .env.example            設定のひな形。実際の .env はコミットしない
 ├── db/init/                起動時に再適用される冪等なSQL
 │   ├── 001_schema.sql      テーブル定義
@@ -96,7 +99,8 @@ Cache Storageは端末のディスクに残り、ログアウトしても消え�
 └── app/
     ├── Dockerfile
     ├── src/                サーバ（Express）
-    │   ├── server.js       起動、ミドルウェア、ルータの組み立て、エラー処理
+    │   ├── app.js          Express アプリ本体（ミドルウェア、ルータ、エラー処理）
+    │   ├── server.js       コンテナでの起動。DB待機、初期化SQL適用、リッスン
     │   ├── config.js       環境変数から決まる設定値
     │   ├── auth.js         Basic認証とセッション
     │   ├── http.js         入力値の検証ヘルパー
@@ -163,6 +167,55 @@ docker compose up --build
 期限は「解析開始予定日」と「データ固定日（`research_studies.data_lock_at`）」の2本の破線として、フローの中に残日数つきで表示します。撤回操作そのものはページ最下部の目立たないリンク（既定は折りたたみ）に置いています。
 
 デモ中に段階の変化を見せるため、検体を次の工程へ進めるボタンを置いています。実際には検査機関側のシステムが更新する操作です。`.env` に `DEMO_CONTROLS=false` を設定すると非表示になります。
+
+## Netlify で公開する
+
+**そのまま繋ぐだけで公開できます。ビルドもデータベースも要りません。**
+
+Netlify にこのリポジトリを接続すれば、`netlify.toml` の設定（`app/public` を配信）で動きます。環境変数も不要です。
+
+### 仕組み
+
+画面のサーバ通信は `app/public/js/api.js` の1箇所に集約されています。静的配信では `/api/*` が SPA のHTMLに落ちるため、**最初の1回でJSONが返らないことを検知して、以降はブラウザ内のモック（`js/mock-api.js`）が応答します**。設定の切り替えは不要で、docker compose で起動したときは自動的に本物のAPIを使います。
+
+モックは本物と同じ応答の形を返すので、画面側のコードは共通です。カバーしている範囲:
+
+- ログイン、サインアップ、ログアウト
+- 本日の記録（1タップ記録、詳細入力、修正）と30日／90日の推移
+- 研究の一覧・詳細、検体トラッキング、工程送り、参加、撤回
+- プロフィール編集、同意履歴
+
+記録や工程送りなどの操作は `localStorage` に残るため、デモ中に触った結果はリロードしても消えません。ブラウザのデータを消せば初期状態に戻ります。
+
+グラフの日付は常に「今日」からの相対で生成しているので、時間が経っても表示がずれません。
+
+### 制約
+
+- **データはブラウザごとに独立**です。別の端末で開けば初期状態から始まります
+- 同じ疾患の平均は、記録者が自分ひとりなので常に「5人分たまると表示します」の状態です
+- ログインは `tippy@example.jp` のみ受け付けます（パスワードは任意）
+
+### 実データベースを繋ぐ場合
+
+Netlify Functions 用の入口（`netlify/functions/api.js`）と依存（ルートの `package.json`）は残してあります。外部の PostgreSQL を用意したうえで `netlify.toml` に以下を足し、環境変数（`DATABASE_URL` / `DATABASE_SSL=true` / `BASIC_AUTH_ENABLED=true` とその資格情報 / `PG_POOL_MAX=1`）を設定すれば、本物のバックエンドで動きます。
+
+```toml
+[build]
+  command = "npm install"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["db/init/**"]
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/api/:splat"
+  status = 200
+  force = true
+```
+
+`BASIC_AUTH_ENABLED` を `true` にしないと全リクエストが503になります（ローカル以外からのアクセスを拒否する安全装置のため）。
 
 ## 限定テスト公開
 

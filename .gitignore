@@ -63,3 +63,6 @@ Thumbs.db
 test-results/
 playwright-report/
 *.png.tmp
+
+# Netlify のローカル作業ディレクトリ
+.netlify/

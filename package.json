@@ -1,0 +1,11 @@
+{
+  "name": "voiceatlas-netlify",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Netlify Functions で app/src の Express アプリを動かすための依存。コンテナ版は app/package.json を使う。",
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0",
+    "serverless-http": "^3.2.0"
+  }
+}

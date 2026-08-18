@@ -32,6 +32,8 @@ const SHELL = [
   "/js/state.js",
   "/js/util.js",
   "/js/api.js",
+  "/js/mock-api.js",
+  "/js/mock-data.js",
   "/js/render-bus.js",
   "/js/session.js",
   "/js/router.js",

@@ -1,0 +1,26 @@
+# 静的配信のみ。API はブラウザ内のモック（app/public/js/mock-api.js）が応答する。
+# 実データベースを繋ぐ構成に戻す手順は README を参照。
+
+[build]
+  publish = "app/public"
+
+# SPA のディープリンク。静的ファイルが先に解決されるので最後に置く。
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
