@@ -305,3 +305,4 @@ docker compose up --build
 現在は研究同意を撤回しても `research_identity_profiles` の氏名・住所は残ります。撤回時に検体は破棄・記録されますが、氏名・住所の扱いは同意文書の記載と実装を一致させる必要があります。
 
 氏名・住所は `research_identity_profiles` に分離しており、通常のプロフィール、検索、SNS機能では参照しない前提です。
+# VoiceAtlas_demo
